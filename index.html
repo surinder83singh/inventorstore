@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resistor Inventory & Solver</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+        .custom-scroll::-webkit-scrollbar { width: 5px; }
+        .custom-scroll::-webkit-scrollbar-track { background: transparent; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        
+        #add-form-container {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            max-height: 500px;
+            opacity: 1;
+            overflow: hidden;
+        }
+        #add-form-container.collapsed {
+            max-height: 0;
+            opacity: 0;
+            margin-bottom: 0;
+            padding-top: 0;
+            padding-bottom: 0;
+        }
+        .chevron-icon { transition: transform 0.3s ease; }
+        .chevron-icon.rotated { transform: rotate(-180deg); }
+        
+        .unit-radio:checked + label {
+            background-color: #2563eb;
+            color: white;
+            border-color: #2563eb;
+            z-index: 10;
+        }
+
+        /* Dropdown animation */
+        #settings-menu {
+            display: none;
+            transform-origin: top right;
+            animation: fadeIn 0.15s ease-out;
+        }
+        #settings-menu.active { display: block; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <!-- Header & Settings -->
+    <div class="max-w-6xl mx-auto mb-8 flex justify-between items-center">
+        <div>
+            <h1 class="text-3xl font-black text-slate-900 tracking-tight">INVENTOR<span class="text-blue-600">BIN</span></h1>
+            <p class="text-slate-500 text-xs font-bold uppercase tracking-widest">Resistor Management System</p>
+        </div>
+        
+        <div class="relative">
+            <button onclick="toggleSettings()" class="bg-white border border-slate-200 p-2.5 rounded-xl shadow-sm hover:bg-slate-50 transition-all flex items-center gap-2 group">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-500 group-hover:rotate-90 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                <span class="text-sm font-bold text-slate-700">Settings</span>
+            </button>
+
+            <div id="settings-menu" class="absolute right-0 mt-2 w-56 bg-white border border-slate-200 rounded-2xl shadow-xl z-50 overflow-hidden">
+                <div class="p-2 space-y-1">
+                    <button onclick="DataManager.export()" class="w-full text-left px-4 py-3 text-sm font-bold text-slate-700 hover:bg-slate-50 flex items-center gap-3 rounded-xl transition-colors">
+                        <svg class="h-4 w-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+                        Export Data (.json)
+                    </button>
+                    <button onclick="document.getElementById('import-input').click()" class="w-full text-left px-4 py-3 text-sm font-bold text-slate-700 hover:bg-slate-50 flex items-center gap-3 rounded-xl transition-colors">
+                        <svg class="h-4 w-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
+                        Import Data (.json)
+                    </button>
+                    <input type="file" id="import-input" class="hidden" accept=".json" onchange="DataManager.handleImport(event)">
+                    <hr class="border-slate-100 my-1">
+                    <button onclick="DataManager.clearAll()" class="w-full text-left px-4 py-3 text-sm font-bold text-red-500 hover:bg-red-50 flex items-center gap-3 rounded-xl transition-colors">
+                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                        Clear All Data
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8">
+        
+        <!-- Inventory Management -->
+        <div class="lg:col-span-5 flex flex-col gap-6">
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 flex flex-col h-[700px] overflow-hidden">
+                <div class="bg-slate-900 p-6 text-white flex justify-between items-center cursor-pointer select-none" onclick="toggleAddForm()">
+                    <div>
+                        <h2 class="text-xl font-black uppercase tracking-tight flex items-center gap-2">📦 My Inventory</h2>
+                    </div>
+                    <div id="collapse-chevron" class="chevron-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7" /></svg>
+                    </div>
+                </div>
+
+                <div class="p-6 flex flex-col flex-1 overflow-hidden">
+                    <div id="add-form-container" class="bg-slate-50 p-4 rounded-xl border border-slate-100 mb-6">
+                        <div class="grid grid-cols-12 gap-3 mb-4">
+                            <div class="col-span-8">
+                                <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Value & Unit</label>
+                                <div class="flex">
+                                    <input type="text" id="inv-val" placeholder="e.g. 10k" oninput="handleValueInput(this)" class="w-1/2 px-3 py-2 border border-slate-200 rounded-l-lg font-mono outline-none">
+                                    <div class="flex flex-1 -ml-px">
+                                        <input type="radio" name="unit" id="unit-ohm" value="1" class="hidden unit-radio" checked>
+                                        <label for="unit-ohm" class="flex-1 flex items-center justify-center border border-slate-200 text-[10px] font-bold cursor-pointer">Ω</label>
+                                        <input type="radio" name="unit" id="unit-kohm" value="1000" class="hidden unit-radio">
+                                        <label for="unit-kohm" class="flex-1 flex items-center justify-center border-y border-r border-slate-200 text-[10px] font-bold cursor-pointer">kΩ</label>
+                                        <input type="radio" name="unit" id="unit-mohm" value="1000000" class="hidden unit-radio">
+                                        <label for="unit-mohm" class="flex-1 flex items-center justify-center border-y border-r border-slate-200 rounded-r-lg text-[10px] font-bold cursor-pointer">MΩ</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-span-4">
+                                <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Qty</label>
+                                <input type="number" id="inv-qty" placeholder="Qty" onkeydown="if(event.key==='Enter')addToInventory()" class="w-full px-3 py-2 border border-slate-200 rounded-lg outline-none">
+                            </div>
+                        </div>
+                        <button onclick="addToInventory()" class="w-full bg-blue-600 text-white py-2.5 rounded-lg font-bold shadow-md active:scale-95 transition-all">Add to Stock</button>
+                    </div>
+
+                    <div class="mb-4 flex gap-2">
+                        <input type="text" id="inv-search" oninput="handleSearchInput()" placeholder="Filter..." class="flex-1 px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none">
+                        <select id="inv-sort" onchange="handleSortChange()" class="bg-slate-50 border border-slate-200 rounded-lg px-2 text-xs font-bold text-slate-600 outline-none">
+                            <option value="val-asc">Value ↑</option>
+                            <option value="val-desc">Value ↓</option>
+                            <option value="qty-asc">Stock ↑</option>
+                            <option value="qty-desc">Stock ↓</option>
+                            
+                        </select>
+                    </div>
+
+                    <div id="inventory-list" class="flex-1 overflow-y-auto custom-scroll pr-2"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Solver -->
+        <div class="lg:col-span-7 flex flex-col gap-6">
+            <div class="bg-slate-900 rounded-2xl shadow-lg p-8 text-white relative">
+                <h2 class="text-2xl font-black mb-2 uppercase">Resistance Solver</h2>
+                <div class="flex flex-col md:flex-row gap-2 mt-4">
+                    <div class="flex flex-1">
+                        <input type="text" id="target-val" placeholder="Target" oninput="handleValueInput(this, true)" class="w-full bg-slate-800 border border-slate-700 rounded-l-xl px-4 py-4 text-2xl font-mono text-blue-400 outline-none">
+                        <select id="target-unit" onchange="saveSolverState()" class="bg-slate-800 border-l border-slate-700 rounded-r-xl px-4 text-xl font-bold text-slate-300">
+                            <option value="1">Ω</option>
+                            <option value="1000">kΩ</option>
+                            <option value="1000000">MΩ</option>
+                        </select>
+                    </div>
+                    <button onclick="findCombinations()" class="bg-blue-600 hover:bg-blue-700 px-8 py-4 rounded-xl font-black uppercase tracking-wide shadow-lg active:scale-95 transition-all">Solve</button>
+                </div>
+            </div>
+
+            <div id="results-container" class="hidden space-y-4">
+                <h3 class="text-lg font-bold text-slate-800">🎯 Recommended Solutions</h3>
+                <div id="closest-match" class="bg-blue-50 border border-blue-100 rounded-xl p-6"></div>
+                <div id="combinations-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+            </div>
+
+            <div id="results-empty" class="bg-white rounded-2xl border border-dashed border-slate-300 p-20 text-center">
+                <p class="text-slate-400 font-medium">Results will appear here.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- DATA MANAGEMENT OBJECT (Reusable for other pages) ---
+        const DataManager = {
+            keys: {
+                inventory: 'resistor_inv',
+                search: 'resistor_search_query',
+                sort: 'resistor_sort_mode',
+                solverVal: 'resistor_solver_val',
+                solverUnit: 'resistor_solver_unit',
+                formCollapsed: 'resistor_add_collapsed'
+            },
+
+            export() {
+                const data = {};
+                Object.values(this.keys).forEach(k => {
+                    data[k] = localStorage.getItem(k);
+                });
+                
+                const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `inventorbin_backup_${new Date().toISOString().split('T')[0]}.json`;
+                a.click();
+                URL.revokeObjectURL(url);
+                toggleSettings(false);
+            },
+
+            async handleImport(event) {
+                const file = event.target.files[0];
+                if (!file) return;
+
+                try {
+                    const text = await file.text();
+                    const data = JSON.parse(text);
+                    
+                    // Validation: Check if it looks like our backup
+                    if (!data[this.keys.inventory]) throw new Error("Invalid backup file format");
+
+                    Object.keys(data).forEach(k => {
+                        if (data[k] !== null) localStorage.setItem(k, data[k]);
+                    });
+
+                    alert("Data imported successfully!");
+                    location.reload();
+                } catch (e) {
+                    alert("Error importing data: " + e.message);
+                }
+                event.target.value = '';
+                toggleSettings(false);
+            },
+
+            clearAll() {
+                if (confirm("Are you sure? This will delete ALL inventory and settings.")) {
+                    Object.values(this.keys).forEach(k => localStorage.removeItem(k));
+                    location.reload();
+                }
+            }
+        };
+
+        // --- UI & SOLVER LOGIC ---
+        let inventory = JSON.parse(localStorage.getItem(DataManager.keys.inventory)) || [];
+        let isAddFormCollapsed = localStorage.getItem(DataManager.keys.formCollapsed) === 'true';
+
+        function toggleSettings(force) {
+            const menu = document.getElementById('settings-menu');
+            if (force === false) menu.classList.remove('active');
+            else menu.classList.toggle('active');
+        }
+
+        // Close dropdown when clicking outside
+        window.addEventListener('click', (e) => {
+            if (!e.target.closest('.relative')) toggleSettings(false);
+        });
+
+        function handleSearchInput() { localStorage.setItem(DataManager.keys.search, document.getElementById('inv-search').value); renderInventory(); }
+        function handleSortChange() { localStorage.setItem(DataManager.keys.sort, document.getElementById('inv-sort').value); renderInventory(); }
+        
+        function handleValueInput(input, isSolver = false) {
+            const val = input.value.toLowerCase();
+            let num = val.replace(/[^0-9.]/g, '');
+            if (val.includes('k')) { if(isSolver) document.getElementById('target-unit').value="1000"; else document.getElementById('unit-kohm').checked=true; input.value=num; }
+            else if (val.includes('m')) { if(isSolver) document.getElementById('target-unit').value="1000000"; else document.getElementById('unit-mohm').checked=true; input.value=num; }
+            else if (/[a-zΩ]/i.test(val)) { if(isSolver) document.getElementById('target-unit').value="1"; else document.getElementById('unit-ohm').checked=true; input.value=num; }
+            if (isSolver) saveSolverState();
+        }
+
+        function saveSolverState() {
+            localStorage.setItem(DataManager.keys.solverVal, document.getElementById('target-val').value);
+            localStorage.setItem(DataManager.keys.solverUnit, document.getElementById('target-unit').value);
+        }
+
+        function saveInventory() { 
+            localStorage.setItem(DataManager.keys.inventory, JSON.stringify(inventory)); 
+            renderInventory(); 
+        }
+
+        function addToInventory() {
+            const v = parseFloat(document.getElementById('inv-val').value);
+            const q = parseInt(document.getElementById('inv-qty').value);
+            const u = parseFloat(document.querySelector('input[name="unit"]:checked').value);
+            if(isNaN(v) || isNaN(q) || v <= 0) return;
+            const val = v * u;
+            const exist = inventory.find(i => i.val === val);
+            exist ? exist.qty += q : inventory.push({val, qty: q});
+            document.getElementById('inv-val').value = '';
+            document.getElementById('inv-qty').value = '';
+            saveInventory();
+        }
+
+        function adjustQty(v, d) { 
+            const i = inventory.find(x => x.val === v); 
+            if(i) { i.qty = Math.max(0, i.qty + d); saveInventory(); } 
+        }
+
+        function removeInventory(v) { 
+            if(confirm("Remove this component?")) {
+                inventory = inventory.filter(i => i.val !== v); 
+                saveInventory(); 
+            }
+        }
+
+        function toggleAddForm(force = null) {
+            isAddFormCollapsed = force !== null ? force : !isAddFormCollapsed;
+            const c = document.getElementById('add-form-container');
+            const ch = document.getElementById('collapse-chevron');
+            isAddFormCollapsed ? (c.classList.add('collapsed'), ch.classList.add('rotated')) : (c.classList.remove('collapsed'), ch.classList.remove('rotated'));
+            localStorage.setItem(DataManager.keys.formCollapsed, isAddFormCollapsed);
+        }
+
+        function formatOhms(n) {
+            if (n >= 1000000) return (n/1000000).toFixed(2).replace(/\.00$/,'') + " MΩ";
+            if (n >= 1000) return (n/1000).toFixed(2).replace(/\.00$/,'') + " kΩ";
+            return n.toFixed(2).replace(/\.00$/,'') + " Ω";
+        }
+
+        function renderInventory() {
+            const list = document.getElementById('inventory-list');
+            const search = (localStorage.getItem(DataManager.keys.search) || "").toLowerCase();
+            const sort = localStorage.getItem(DataManager.keys.sort) || "val-asc";
+            let filtered = inventory.filter(i => formatOhms(i.val).toLowerCase().includes(search));
+            filtered.sort((a,b) => sort==='val-asc' ? a.val-b.val : sort==='val-desc' ? b.val-a.val : sort==='qty-asc' ? a.qty-b.qty : b.qty-a.qty);
+            list.innerHTML = filtered.map(i => `
+                <div class="${i.qty<1?'opacity-50 grayscale':''} flex items-center justify-between p-3 bg-white border border-slate-100 rounded-md shadow-sm mb-2 transition-all">
+                    <div class="font-mono font-black text-slate-800 text-sm">${formatOhms(i.val)}</div>
+                    <div class="flex items-center gap-1">
+                        <button onclick="adjustQty(${i.val}, -1)" class="w-7 h-7 bg-slate-100 rounded font-bold hover:bg-slate-200">-</button>
+                        <span class="w-8 text-center text-xs font-black">${i.qty}</span>
+                        <button onclick="adjustQty(${i.val}, 1)" class="w-7 h-7 bg-slate-100 rounded font-bold hover:bg-slate-200">+</button>
+                        <button onclick="removeInventory(${i.val})" class="ml-2 text-slate-300 hover:text-red-500">×</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function findCombinations() {
+            const raw = parseFloat(document.getElementById('target-val').value);
+            const unit = parseFloat(document.getElementById('target-unit').value);
+            const pool = inventory.filter(i => i.qty > 0).sort((a,b) => a.val - b.val);
+            if(isNaN(raw) || pool.length === 0) return;
+            const target = raw * unit;
+
+            document.getElementById('results-empty').classList.add('hidden');
+            document.getElementById('results-container').classList.remove('hidden');
+
+            const combos = [];
+            const seenSigs = new Set();
+            let perfectFoundAtCount = 999; 
+
+            const add = (v, type, parts) => {
+                const count = parts.length;
+                if (count > perfectFoundAtCount) return; 
+                const err = Math.abs(v - target) / target;
+                const sig = parts.sort((a,b)=>a-b).join('|') + v.toFixed(5);
+                if (seenSigs.has(sig)) return;
+                if (err < 0.00001) perfectFoundAtCount = Math.min(perfectFoundAtCount, count);
+                combos.push({ val: v, type, parts, error: err, count });
+                seenSigs.add(sig);
+            };
+
+            pool.forEach(i => {
+                for(let n=1; n <= Math.min(10, i.qty); n++) {
+                    add(i.val * n, n===1 ? 'Single' : `Series (${n}x)`, Array(n).fill(i.val));
+                    if(n > 1) add(i.val / n, `Parallel (${n}x)`, Array(n).fill(i.val));
+                }
+            });
+
+            for(let i=0; i<pool.length; i++){
+                for(let j=i; j<pool.length; j++){
+                    const r1=pool[i], r2=pool[j];
+                    if(i === j && r1.qty < 2) continue;
+                    add(r1.val + r2.val, 'Series', [r1.val, r2.val]);
+                    add((r1.val*r2.val)/(r1.val+r2.val), 'Parallel', [r1.val, r2.val]);
+                }
+            }
+
+            const subset = pool.slice(0, 40); 
+            for(let i=0; i<subset.length; i++){
+                for(let j=i; j<subset.length; j++){
+                    for(let k=j; k<subset.length; k++){
+                        const r1=subset[i], r2=subset[j], r3=subset[k];
+                        const countReq = {}; 
+                        [r1,r2,r3].forEach(r => countReq[r.val] = (countReq[r.val]||0)+1);
+                        let possible = true;
+                        for(let valKey in countReq) {
+                            const available = pool.find(p => p.val == valKey).qty;
+                            if(countReq[valKey] > available) { possible = false; break; }
+                        }
+                        if(!possible) continue;
+                        add(r1.val+r2.val+r3.val, '3-Series', [r1.val, r2.val, r3.val]);
+                        add(1/(1/r1.val+1/r2.val+1/r3.val), '3-Parallel', [r1.val, r2.val, r3.val]);
+                    }
+                }
+            }
+
+            combos.sort((a,b) => (a.error - b.error) || (a.count - b.count));
+            const finalResults = combos.slice(0, 15);
+            if(finalResults.length === 0) return;
+
+            const best = finalResults[0];
+            const bestErr = ((best.val - target)/target*100).toFixed(2);
+            document.getElementById('closest-match').innerHTML = `
+                <div class="flex justify-between items-start">
+                    <div class="flex-1">
+                        <div class="flex items-center gap-2 mb-2">
+                             <span class="text-[10px] font-black text-blue-600 uppercase">Best Solution</span>
+                             <span class="text-[9px] font-black bg-blue-600 text-white px-2 py-0.5 rounded uppercase">${best.type}</span>
+                        </div>
+                        <div class="text-4xl font-black text-slate-800 mb-3">${formatOhms(best.val)}</div>
+                        <div class="flex gap-1.5 flex-wrap">
+                            ${best.parts.map(p => `<span class="bg-white px-2 py-1 border border-blue-100 rounded text-xs font-mono font-bold text-blue-800 shadow-sm">${formatOhms(p)}</span>`).join('<span class="text-blue-200 self-center font-bold">+</span>')}
+                        </div>
+                    </div>
+                    <div class="text-right ml-4">
+                        <span class="text-[10px] font-black text-slate-400 uppercase">Error</span>
+                        <div class="text-2xl font-black ${Math.abs(bestErr)<0.1?'text-emerald-600':'text-slate-600'}">${bestErr}%</div>
+                    </div>
+                </div>`;
+
+            document.getElementById('combinations-grid').innerHTML = finalResults.slice(1).map(res => {
+                const err = ((res.val - target)/target*100).toFixed(2);
+                return `
+                    <div class="bg-white border border-slate-200 rounded-xl p-5 hover:border-blue-200 transition-colors">
+                        <div class="flex justify-between items-start mb-3">
+                            <span class="text-[9px] font-black bg-slate-800 text-white px-2 py-0.5 rounded uppercase">${res.type}</span>
+                            <span class="text-xs font-bold text-slate-500">${err}%</span>
+                        </div>
+                        <div class="text-xl font-black text-slate-800 mb-2">${formatOhms(res.val)}</div>
+                        <div class="flex gap-1 flex-wrap">${res.parts.map(p => `<span class="bg-slate-50 px-1.5 py-0.5 border border-slate-100 rounded text-[10px] font-mono">${formatOhms(p)}</span>`).join('')}</div>
+                    </div>`;
+            }).join('');
+        }
+
+        window.onload = () => {
+            document.getElementById('inv-search').value = localStorage.getItem(DataManager.keys.search) || "";
+            document.getElementById('inv-sort').value = localStorage.getItem(DataManager.keys.sort) || "val-asc";
+            const sVal = localStorage.getItem(DataManager.keys.solverVal);
+            const sUnit = localStorage.getItem(DataManager.keys.solverUnit);
+            if(sVal) document.getElementById('target-val').value = sVal;
+            if(sUnit) document.getElementById('target-unit').value = sUnit;
+            renderInventory();
+            toggleAddForm(isAddFormCollapsed);
+        };
+    </script>
+</body>
+</html>
