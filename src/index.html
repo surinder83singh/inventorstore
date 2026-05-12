@@ -7,9 +7,8 @@
     <link href="style.css" rel="stylesheet">
 </head>
 <body class="p-0">
-
     <!-- Modular Header (Reusable Component) -->
-    <header id="main-header" class="bg-white border-b border-slate-200 sticky top-0 z-50">
+    <header id="main-header" class="bg-white shadow-sm border-b border-slate-200 fixed top-0 left-0 right-0 z-50">
         <div class="max-w-6xl mx-auto px-4 md:px-8 py-4 flex justify-between items-center">
             <div class="cursor-pointer" onclick="navigateTo('inventory')">
                 <h1 class="text-2xl font-black text-slate-900 tracking-tight">INVENTOR <span class="text-blue-600">Store</span></h1>
@@ -18,18 +17,18 @@
             
             <div class="flex items-center gap-2">
                 <!-- Settings Dropdown -->
-                <div class="relative">
-                    <button onclick="toggleMenu('settings-menu')" onmouseenter="toggleMenu('settings-menu')" class="bg-slate-50 border border-slate-200 p-2 rounded-xl hover:bg-slate-100 transition-all flex items-center gap-2 group">
+                <div class="relative dropdown-holder11">
+                    <button onclick="showMenu('settings-menu')" onmouseenter="showMenu('settings-menu')" class=" bg-slate-50 border border-slate-200 p-2 rounded-xl hover:bg-slate-100 transition-all flex items-center gap-2 group">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-500 group-hover:rotate-45 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
                         </svg>
                     </button>
-                    <div id="settings-menu" class="dropdown-menu absolute right-0 mt-2 w-52 bg-white border border-slate-200 rounded-2xl shadow-xl overflow-hidden">
-                        <div class="p-2 space-y-1">
+                    <div id="settings-menu" class="dropdown-menu absolute right-0 top-0 w-52  overflow-hidden">
+                        <div class="p-2 space-y-1 mt-12 bg-white border border-slate-200 rounded-2xl shadow-xl">
                             <button onclick="DataManager.export()" class="w-full text-left px-4 py-2.5 text-sm font-bold text-slate-700 hover:bg-slate-50 rounded-lg flex items-center gap-3">
                                 <svg class="h-4 w-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" stroke-width="2"/></svg> Export
                             </button>
-                            <button onclick="document.getElementById('import-input').click()" class="w-full text-left px-4 py-2.5 text-sm font-bold text-slate-700 hover:bg-slate-50 rounded-lg flex items-center gap-3">
+                            <button onclick="qS('#import-input').click()" class="w-full text-left px-4 py-2.5 text-sm font-bold text-slate-700 hover:bg-slate-50 rounded-lg flex items-center gap-3">
                                 <svg class="h-4 w-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" stroke-width="2"/></svg> Import
                             </button>
                             <input type="file" id="import-input" class="hidden" accept=".json" onchange="DataManager.handleImport(event)">
@@ -43,7 +42,7 @@
 
                 <!-- Burger Menu -->
                 <div class="relative">
-                    <button onclick="toggleMenu('burger-menu')" onmouseenter="toggleMenu('burger-menu')" class="bg-blue-600 border border-blue-700 p-2 rounded-xl hover:bg-blue-700 transition-all text-white flex items-center justify-center">
+                    <button onclick="showMenu('burger-menu')" onmouseenter="showMenu('burger-menu')" class="bg-blue-600 border border-blue-700 p-2 rounded-xl hover:bg-blue-700 transition-all text-white flex items-center justify-center">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
                         </svg>
@@ -67,7 +66,7 @@
     </header>
 
     <!-- Main Content Container -->
-    <main id="app-container" class="max-w-6xl mx-auto p-4 md:p-8">
+    <main id="app-container" class="max-w-6xl mx-auto p-4 md:p-8 mt-18 transition-opacity opacity-0">
         <!-- Dashboard Page (Default) -->
         <div id="page-inventory" class="page-view grid grid-cols-1 lg:grid-cols-12 gap-8">
             <!-- Inventory Management -->
@@ -104,8 +103,8 @@
                         </div>
 
                         <div class="mb-4 flex gap-2">
-                            <input type="text" id="inv-search" oninput="handleSearchInput()" placeholder="Filter..." class="flex-1 px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none">
-                            <select id="inv-sort" onchange="handleSortChange()" class="bg-slate-50 border border-slate-200 rounded-lg px-2 text-xs font-bold text-slate-600 outline-none">
+                            <input type="text" id="inv-search" oninput="handleSearchInput()" placeholder="Filter..." class="flex-1 min-w-10 p-2 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none">
+                            <select id="inv-sort" onchange="handleSortChange()" class="bg-slate-50 border border-slate-200 rounded-lg px-2 text-sm font-bold text-slate-600 outline-none">
                                 <option value="val-asc">Value ↑</option>
                                 <option value="val-desc">Value ↓</option>
                                 <option value="qty-asc">Stock ↑</option>    
@@ -157,20 +156,20 @@
                             <span class="p-1 text-orange-600">📏</span> Resistor Calculator
                         </h1>
                         <span class="relative pl-2">
-                            <button title="Select bands" onclick="toggleMenu('resistor-mode-menu')" onmouseenter="toggleMenu('resistor-mode-menu')" class="group border border-blue-700 p-2 rounded-xl hover:bg-blue-700 hover:text-white transition-all text-white flex items-center justify-center">
+                            <button title="Select bands" onclick="showMenu('resistor-mode-menu')" onmouseenter="showMenu('resistor-mode-menu')" class="group border border-blue-700 p-2 rounded-xl hover:bg-blue-700 hover:text-white transition-all text-white flex items-center justify-center">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 group-hover:rotate-45 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
                                 </svg>
                             </button>
                             <div id="resistor-mode-menu" class="dropdown-menu absolute left-2 mt-2 w-50 bg-white border border-slate-200 rounded-2xl shadow-xl overflow-hidden">
                                 <div class="p-2 space-y-1">
-                                    <button id="btn-4" onclick="toggleMenu('resistor-mode-menu');setMode(4)" class="mode-btn w-full text-left px-4 py-3 text-sm font-bold text-slate-700 hover:bg-slate-50 rounded-xl flex items-center gap-3">
+                                    <button id="btn-4" onclick="hideMenu('resistor-mode-menu');setMode(4)" class="mode-btn w-full text-left px-4 py-3 text-sm font-bold text-slate-700 hover:bg-slate-50 rounded-xl flex items-center gap-3">
                                         <span class="p-1 text-blue-600 icon">4</span> Band
                                     </button>
-                                    <button id="btn-5" onclick="toggleMenu('resistor-mode-menu');setMode(5)" class="mode-btn w-full text-left px-4 py-3 text-sm font-bold text-slate-700 hover:bg-slate-50 rounded-xl flex items-center gap-3">
+                                    <button id="btn-5" onclick="hideMenu('resistor-mode-menu');setMode(5)" class="mode-btn w-full text-left px-4 py-3 text-sm font-bold text-slate-700 hover:bg-slate-50 rounded-xl flex items-center gap-3">
                                         <span class="p-1 text-orange-600 icon">5</span> Band
                                     </button>
-                                    <button id="btn-6" onclick="toggleMenu('resistor-mode-menu');setMode(6)" class="mode-btn w-full text-left px-4 py-3 text-sm font-bold text-slate-700 hover:bg-slate-50 rounded-xl flex items-center gap-3">
+                                    <button id="btn-6" onclick="hideMenu('resistor-mode-menu');setMode(6)" class="mode-btn w-full text-left px-4 py-3 text-sm font-bold text-slate-700 hover:bg-slate-50 rounded-xl flex items-center gap-3">
                                         <span class="p-1 text-slate-600 icon">6</span> Band
                                     </button>
                                 </div>
@@ -288,24 +287,35 @@
 
     <script>
         // --- SHARED NAVIGATION & UI ---
-        function toggleMenu(id) {
-            const menu = document.getElementById(id);
-            const isActive = menu.classList.contains('active');
+        function qS(selector){
+            return document.querySelector(selector)
+        }
+        function qSAll(selector){
+            return document.querySelectorAll(selector)
+        }
+        function showMenu(id){
+            toggleMenu(id, true)
+        }
+        function hideMenu(id){
+            toggleMenu(id, false)
+        }
+        function toggleMenu(id, show) {
             // Close all first
-            document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('active'));
-            if (!isActive) menu.classList.add('active');
+            qSAll('.dropdown-menu').forEach(m => m.classList.remove('active'));
+            if (show && id) qS(`#${id}`)?.classList.add('active');
         }
 
         window.addEventListener('click', (e) => {
             if (!e.target.closest('.relative')) {
-                document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('active'));
+                toggleMenu()
             }
         });
 
         function navigateTo(pageId) {
-            document.querySelectorAll('.page-view').forEach(p => p.classList.add('hidden'));
-            document.getElementById(`page-${pageId}`).classList.remove('hidden');
-            document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('active'));
+            qSAll('.page-view').forEach(p => p.classList.add('hidden'));
+            qS(`#page-${pageId}`).classList.remove('hidden');
+            localStorage.setItem("resistor_inv_pageid", pageId);
+            toggleMenu()
             window.scrollTo(0, 0);
         }
 
@@ -353,32 +363,34 @@
             const val = input.value.toLowerCase();
             let num = val.replace(/[^0-9.,km]/g, '');
             let numClean = val.replace(/[^0-9.]/g, '');
-            if (val.includes('k')) { if(isSolver) document.getElementById('target-unit').value="1000"; else document.getElementById('unit-kohm').checked=true; }
-            else if (val.includes('m')) { if(isSolver) document.getElementById('target-unit').value="1000000"; else document.getElementById('unit-mohm').checked=true; }
-            else if (/[a-zΩ]/i.test(val)) { if(isSolver) document.getElementById('target-unit').value="1"; else document.getElementById('unit-ohm').checked=true; }
+            if (val.includes('k')) { if(isSolver) qS('#target-unit').value="1000"; else qS('#unit-kohm').checked=true; }
+            else if (val.includes('m')) { if(isSolver) qS('#target-unit').value="1000000"; else qS('#unit-mohm').checked=true; }
+            else if (/[a-zΩ]/i.test(val)) { if(isSolver) qS('#target-unit').value="1"; else qS('#unit-ohm').checked=true; }
             if (isSolver){
                 saveSolverState();
                 input.value = numClean;
             }else{
-                input.value = num;
                 if(val.includes(',')){
-                    document.getElementById('unit-kohm').checked=false;
-                    document.getElementById('unit-mohm').checked=false;
-                    document.getElementById('unit-ohm').checked=false;
+                    input.value = num;
+                    qS('#unit-kohm').checked=false;
+                    qS('#unit-mohm').checked=false;
+                    qS('#unit-ohm').checked=false;
+                }else{
+                    input.value = numClean;
                 }
             }
         }
 
         function saveSolverState() {
-            localStorage.setItem(DataManager.keys.solverVal, document.getElementById('target-val').value);
-            localStorage.setItem(DataManager.keys.solverUnit, document.getElementById('target-unit').value);
+            localStorage.setItem(DataManager.keys.solverVal, qS('#target-val').value);
+            localStorage.setItem(DataManager.keys.solverUnit, qS('#target-unit').value);
         }
 
         function addToInventory() {
-            let valInput = document.getElementById('inv-val');
+            let valInput = qS('#inv-val');
             let values = valInput.value.trim().toLowerCase().split(",");
-            let globalUnit = parseFloat(document.querySelector('input[name="unit"]:checked')?.value||1);
-            const globalQty = parseInt(document.getElementById('inv-qty').value);
+            let globalUnit = parseFloat(qS('input[name="unit"]:checked')?.value||1);
+            const globalQty = parseInt(qS('#inv-qty').value);
             const useGlobalUnit = values.length === 1; // If not multiple values, expect units in each value
             if (isNaN(globalQty)) {
                 return;
@@ -394,7 +406,7 @@
                 exist ? exist.qty = globalQty : inventory.push({val, qty: globalQty});
             }
             valInput.value = '';
-            document.getElementById('inv-qty').value = '';
+            qS('#inv-qty').value = '';
             saveAndRender();
             valInput.focus();
         }
@@ -413,8 +425,8 @@
             renderInventory();
         }
 
-        function handleSearchInput() { localStorage.setItem(DataManager.keys.search, document.getElementById('inv-search').value); renderInventory(); }
-        function handleSortChange() { localStorage.setItem(DataManager.keys.sort, document.getElementById('inv-sort').value); renderInventory(); }
+        function handleSearchInput() { localStorage.setItem(DataManager.keys.search, qS('#inv-search').value); renderInventory(); }
+        function handleSortChange() { localStorage.setItem(DataManager.keys.sort, qS('#inv-sort').value); renderInventory(); }
 
         function formatOhms(n) {
             if (n >= 1000000) return (n/1000000).toFixed(2).replace(/\.00$/,'') + " MΩ";
@@ -428,11 +440,11 @@
             if(s.includes("k")) s = s.replace("k", "000");
             else if(s.includes("m")) s = s.replace("m", "000000");
             else if(s.includes("g")) s = s.replace("g", "000000000");
-            return parseFloat(s);
+            return parseFloat(s.replace(/[^0-9\.]/g, ""));
         }
 
         function renderInventory() {
-            const list = document.getElementById('inventory-list');
+            const list = qS('#inventory-list');
             const search = parseValue(localStorage.getItem(DataManager.keys.search) || "")
             //console.log("Rendering inventory with search:", search)
             const sort = localStorage.getItem(DataManager.keys.sort) || "val-asc";
@@ -493,8 +505,8 @@
 
         function toggleAddForm() {
             isAddFormCollapsed = !isAddFormCollapsed;
-            const c = document.getElementById('add-form-container');
-            const ch = document.getElementById('collapse-chevron');
+            const c = qS('#add-form-container');
+            const ch = qS('#collapse-chevron');
             isAddFormCollapsed ? (c.classList.add('collapsed'), ch.classList.add('rotated')) : (c.classList.remove('collapsed'), ch.classList.remove('rotated'));
             localStorage.setItem(DataManager.keys.formCollapsed, isAddFormCollapsed);
         }
@@ -505,14 +517,14 @@
 
         // Solver algorithm
         function findCombinations() {
-            const raw = parseFloat(document.getElementById('target-val').value);
-            const unit = parseFloat(document.getElementById('target-unit').value);
+            const raw = parseFloat(qS('#target-val').value);
+            const unit = parseFloat(qS('#target-unit').value);
             const pool = inventory.filter(i => i.qty > 0).sort((a,b) => a.val - b.val);
             if(isNaN(raw) || pool.length === 0) return;
             const target = raw * unit;
 
-            document.getElementById('results-empty').classList.add('hidden');
-            document.getElementById('results-container').classList.remove('hidden');
+            qS('#results-empty').classList.add('hidden');
+            qS('#results-container').classList.remove('hidden');
 
             const combos = [];
             const seenSigs = new Set();
@@ -587,7 +599,7 @@
 
             const best = finalResults[0];
             const bestErr = ((best.val - target)/target*100).toFixed(2);
-            document.getElementById('closest-match').innerHTML = `
+            qS('#closest-match').innerHTML = `
                 <div class="flex justify-between items-start">
                     <div class="flex-1">
                         <div class="flex items-center gap-2 mb-2">
@@ -605,7 +617,7 @@
                     </div>
                 </div>`;
 
-            document.getElementById('combinations-grid').innerHTML = finalResults.slice(1).map(res => {
+            qS('#combinations-grid').innerHTML = finalResults.slice(1).map(res => {
                 const err = ((res.val - target)/target*100).toFixed(2);
                 return `
                     <div class="bg-white border border-slate-200 rounded-xl p-5 hover:border-blue-200 transition-colors">
@@ -614,7 +626,7 @@
                             <span class="text-xs font-bold text-slate-500">${err}%</span>
                         </div>
                         <div class="text-xl font-black text-slate-800 mb-2">${formatOhms(res.val)}</div>
-                        <div class="flex gap-1 flex-wrap">${res.parts.map(p => `<span class="bg-slate-50 px-1.5 py-0.5 border border-slate-100 rounded text-[10px] font-mono">${formatOhms(p)}</span>`).join('')}</div>
+                        <div class="flex gap-1 flex-wrap">${res.parts.map(p => `<span class="bg-slate-50 px-1.5 py-0.5 border border-slate-300 rounded text-[10px] font-mono">${formatOhms(p)}</span>`).join('')}</div>
                     </div>`;
             }).join('');
         }
@@ -641,28 +653,28 @@
         function setMode(mode) {
             currentMode = mode;
             // Update Buttons
-            document.querySelectorAll('.mode-btn').forEach(b => b.classList.toggle("selected", false) );
-            document.getElementById(`btn-${mode}`).classList.toggle("selected", true)
+            qSAll('.mode-btn').forEach(b => b.classList.toggle("selected", false) );
+            qS(`#btn-${mode}`).classList.toggle("selected", true)
 
             // Toggle Visibility
-            document.getElementById('sec-b3').classList.toggle('hide-band', mode === 4);
-            document.getElementById('sec-ppm').classList.toggle('hide-band', mode !== 6);
-            document.getElementById('ppm-box').classList.toggle('hide-band', mode !== 6);
+            qS('#sec-b3').classList.toggle('hide-band', mode === 4);
+            qS('#sec-ppm').classList.toggle('hide-band', mode !== 6);
+            qS('#ppm-box').classList.toggle('hide-band', mode !== 6);
             
-            document.getElementById('v-band3').classList.toggle('hide-band', mode === 4);
-            document.getElementById('v-band6').classList.toggle('hide-band', mode !== 6);
+            qS('#v-band3').classList.toggle('hide-band', mode === 4);
+            qS('#v-band6').classList.toggle('hide-band', mode !== 6);
 
             updateRegistance();
         }
 
         function initInputs() {
             const containers = {
-                b1: document.getElementById('group-b1'),
-                b2: document.getElementById('group-b2'),
-                b3: document.getElementById('group-b3'),
-                mult: document.getElementById('group-mult'),
-                tol: document.getElementById('group-tol'),
-                ppm: document.getElementById('group-ppm')
+                b1: qS('#group-b1'),
+                b2: qS('#group-b2'),
+                b3: qS('#group-b3'),
+                mult: qS('#group-mult'),
+                tol: qS('#group-tol'),
+                ppm: qS('#group-ppm')
             };
 
             colors.forEach((c, idx) => {
@@ -702,20 +714,20 @@
         }
 
         function updateRegistance() {
-            const b1 = colors[document.querySelector('input[name="b1"]:checked').value];
-            const b2 = colors[document.querySelector('input[name="b2"]:checked').value];
-            const b3 = colors[document.querySelector('input[name="b3"]:checked').value];
-            const mult = colors[document.querySelector('input[name="mult"]:checked').value];
-            const tol = colors[document.querySelector('input[name="tol"]:checked').value];
-            const ppm = colors[document.querySelector('input[name="ppm"]:checked').value];
+            const b1 = colors[qS('input[name="b1"]:checked').value];
+            const b2 = colors[qS('input[name="b2"]:checked').value];
+            const b3 = colors[qS('input[name="b3"]:checked').value];
+            const mult = colors[qS('input[name="mult"]:checked').value];
+            const tol = colors[qS('input[name="tol"]:checked').value];
+            const ppm = colors[qS('input[name="ppm"]:checked').value];
 
             // Visual Update
-            document.getElementById('v-band1').className = `band-visual ${b1.hex}`;
-            document.getElementById('v-band2').className = `band-visual ${b2.hex}`;
-            document.getElementById('v-band3').className = `band-visual ${b3.hex} ${currentMode === 4 ? 'hide-band' : ''}`;
-            document.getElementById('v-band4').className = `band-visual ${mult.hex}`;
-            document.getElementById('v-band5').className = `band-visual ${tol.hex}`;
-            document.getElementById('v-band6').className = `band-visual ${ppm.hex} ${currentMode !== 6 ? 'hide-band' : ''}`;
+            qS('#v-band1').className = `band-visual ${b1.hex}`;
+            qS('#v-band2').className = `band-visual ${b2.hex}`;
+            qS('#v-band3').className = `band-visual ${b3.hex} ${currentMode === 4 ? 'hide-band' : ''}`;
+            qS('#v-band4').className = `band-visual ${mult.hex}`;
+            qS('#v-band5').className = `band-visual ${tol.hex}`;
+            qS('#v-band6').className = `band-visual ${ppm.hex} ${currentMode !== 6 ? 'hide-band' : ''}`;
 
             // Math
             let base;
@@ -731,32 +743,39 @@
             const max = resistance * (1 + (tPct / 100));
 
             // Display
-            document.getElementById('res-value').innerText = formatOhms(resistance);
-            document.getElementById('tol-value').innerText = `± ${tPct}%`;
-            document.getElementById('min-res').innerText = formatOhms(min);
-            document.getElementById('max-res').innerText = formatOhms(max);
+            qS('#res-value').innerText = formatOhms(resistance);
+            qS('#tol-value').innerText = `± ${tPct}%`;
+            qS('#min-res').innerText = formatOhms(min);
+            qS('#max-res').innerText = formatOhms(max);
             
             if (currentMode === 6) {
-                document.getElementById('ppm-val').innerText = `${ppm.ppm} ppm/K`;
+                qS('#ppm-val').innerText = `${ppm.ppm} ppm/K`;
             }
         }
 
         }
 
         window.onload = () => {
-            document.getElementById('inv-search').value = localStorage.getItem(DataManager.keys.search) || "";
-            document.getElementById('inv-sort').value = localStorage.getItem(DataManager.keys.sort) || "val-asc";
+            const pageId = localStorage.getItem("resistor_inv_pageid");
+            if(pageId){
+                navigateTo(pageId)
+            }
+            qS("#app-container").classList.remove('opacity-0')
+            qS('#inv-search').value = localStorage.getItem(DataManager.keys.search) || "";
+            qS('#inv-sort').value = localStorage.getItem(DataManager.keys.sort) || "val-asc";
             const sVal = localStorage.getItem(DataManager.keys.solverVal);
             const sUnit = localStorage.getItem(DataManager.keys.solverUnit);
-            if(sVal) document.getElementById('target-val').value = sVal;
-            if(sUnit) document.getElementById('target-unit').value = sUnit;
+            
+
+            if(sVal) qS('#target-val').value = sVal;
+            if(sUnit) qS('#target-unit').value = sUnit;
             renderInventory();
             initInputs();
             setMode(4);
             //navigateTo("resistance")
             if(isAddFormCollapsed) {
-                const c = document.getElementById('add-form-container');
-                const ch = document.getElementById('collapse-chevron');
+                const c = qS('#add-form-container');
+                const ch = qS('#collapse-chevron');
                 c.classList.add('collapsed'); ch.classList.add('rotated');
             }
         };
