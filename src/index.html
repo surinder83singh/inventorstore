@@ -152,7 +152,7 @@
         
                 <div class="bg-slate-900 px-6 py-4 flex flex-wrap items-center justify-between text-white shrink-0">
                     <div class="flex items-center">
-                        <h1 class="text-xl font-black uppercase tracking-tight  ">
+                        <h1 class="text-xl font-black uppercase tracking-tight max-w-[150px] white-space-nowrap nowrap overflow-hidden">
                             <span class="p-1 text-orange-600">📏</span> Resistor Calculator
                         </h1>
                         <span class="relative pl-2">
@@ -161,16 +161,16 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
                                 </svg>
                             </button>
-                            <div id="resistor-mode-menu" class="dropdown-menu absolute left-2 mt-2 w-50 bg-white border border-slate-200 rounded-2xl shadow-xl overflow-hidden">
+                            <div id="resistor-mode-menu" class="dropdown-menu absolute left-2 mt-2 w-25 bg-white border border-slate-200 rounded-2xl shadow-xl overflow-hidden">
                                 <div class="p-2 space-y-1">
                                     <button id="btn-4" onclick="hideMenu('resistor-mode-menu');setMode(4)" class="mode-btn w-full text-left px-4 py-3 text-sm font-bold text-slate-700 hover:bg-slate-50 rounded-xl flex items-center gap-3">
-                                        <span class="p-1 text-blue-600 icon">4</span> Band
+                                        4 Band
                                     </button>
                                     <button id="btn-5" onclick="hideMenu('resistor-mode-menu');setMode(5)" class="mode-btn w-full text-left px-4 py-3 text-sm font-bold text-slate-700 hover:bg-slate-50 rounded-xl flex items-center gap-3">
-                                        <span class="p-1 text-orange-600 icon">5</span> Band
+                                        5 Band
                                     </button>
                                     <button id="btn-6" onclick="hideMenu('resistor-mode-menu');setMode(6)" class="mode-btn w-full text-left px-4 py-3 text-sm font-bold text-slate-700 hover:bg-slate-50 rounded-xl flex items-center gap-3">
-                                        <span class="p-1 text-slate-600 icon">6</span> Band
+                                        6 Band
                                     </button>
                                 </div>
                             </div>
@@ -190,7 +190,7 @@
                         </div>
                     </div>
 
-                    <div class="text-right min-w-[150px]">
+                    <div class="text-right md:min-w-[150px]">
                         <div id="res-value" class="text-3xl font-black text-blue-400">1.00 kΩ</div>
                         <div id="tol-value" class="text-xs font-semibold text-slate-400">± 5%</div>
                     </div>
@@ -198,7 +198,7 @@
 
                 <div class="flex-1 overflow-auto flex flex-row flex-wrap">
                     <!-- Left: Controls (Scrollable if needed, but designed for 1 column) -->
-                    <div class="flex-[5] grow-[5] min-w-[300px] p-4 grid grid-cols-1 gap-x-6 gap-y-5 overflow-y-auto border-r border-slate-100">
+                    <div class="flex-[6] grow-[6] min-w-[330px] p-4 grid grid-cols-1 gap-x1-6 gap-y-5 overflow-y-auto border-r border-slate-100">
                         
                         <section id="sec-b1">
                             <h3 class="text-[13px] font-bold text-slate-400 uppercase mb-2">1st Digit</h3>
