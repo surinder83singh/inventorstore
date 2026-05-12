@@ -35,144 +35,448 @@
             z-index: 10;
         }
 
-        /* Dropdown animation */
-        #settings-menu {
+        /* Dropdown animations */
+        .dropdown-menu {
             display: none;
             transform-origin: top right;
             animation: fadeIn 0.15s ease-out;
+            z-index: 100;
         }
-        #settings-menu.active { display: block; }
+        .dropdown-menu.active { display: block; }
+        .dropdown-menu .selected.selected,
+        .dropdown-menu .selected .icon.icon{
+            background-color: #3B82F6;
+            color: white;
+        }
         @keyframes fadeIn {
             from { opacity: 0; transform: scale(0.95); }
             to { opacity: 1; transform: scale(1); }
         }
+
+        /* Edit Qty Input Styling */
+        .qty-edit-input {
+            width: 2rem;
+            text-align: center;
+            font-size: 0.75rem;
+            font-weight: 800;
+            border: 1px solid #3b82f6;
+            border-radius: 0.375rem;
+            outline: none;
+            background: white;
+            height:100%;
+        }
+
+        /* Registance reader */
+        .resistor-body {
+            background: #d4b483;
+            height: 40px;
+            width: 150px;
+            border-radius: 15px;
+            position: relative;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 0 10px;
+            box-shadow: inset 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .resistor-body::after,
+        .resistor-body::before{
+            content: "";
+            position: absolute;
+            top: 0%;
+            left: 50%;
+            height: 5px;
+            width: 62%;
+            transform: translate(-50%, 0%);
+            border: 2px solid rgb(15 23 42 / var(--tw-bg-opacity, 1));
+            border-width: 0px 5px;
+            --tw-bg-opacity: 1;
+            background-color: rgb(15 23 42 / var(--tw-bg-opacity, 1));
+        }
+        .resistor-body::before{
+            top: unset;
+            bottom: 0%;
+            border-top-left-radius: 5px;
+            border-top-right-radius: 5px;
+        }
+        .resistor-body::after{
+            border-bottom-left-radius: 5px;
+            border-bottom-right-radius: 5px;
+        }
+        .resistor-wire {
+            width: 200px;
+            height: 4px;
+            background:#C0C0C0;/* #f9f9f9;*/
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border-radius: 2px;
+        }
+        .resistor-wire::after,
+        .resistor-wire::before{
+            content: "";
+            position: absolute;
+            top: 0%;
+            left: 0%;
+            width: 4px;
+            height: 25px;
+            background: #C0C0C0;
+            border-radius: 5px;
+        }
+        .resistor-wire::before{
+            right: 0%;
+            left: unset;
+        }
+        .band-visual {
+            width: 10px;
+            height: 100%;
+            transition: background-color 0.2s ease, opacity 0.2s ease;
+        }
+        /* Color Classes */
+        .bg-black { background-color: #000000; }
+        .bg-brown { background-color: #8B4513; }
+        .bg-red { background-color: #EF4444; }
+        .bg-orange { background-color: #F97316; }
+        .bg-yellow { background-color: #FACC15; }
+        .bg-green { background-color: #22C55E; }
+        .bg-blue { background-color: #3B82F6; }
+        .bg-violet { background-color: #8B5CF6; }
+        .bg-grey { background-color: #6B7280; }
+        .bg-white { background-color: #FFFFFF; border: 1px solid #e2e8f0; }
+        .bg-gold { background-color: #FFD700; }
+        .bg-silver { background-color: #C0C0C0; }
+
+        .page-resistance input[type="radio"]:checked + label {
+            ring: 2px;
+            ring-offset: 1px;
+            --tw-ring-color: #3b82f6;
+            transform: scale(1.35);
+            z-index: 10;
+        }
+        .hide-band { display: none !important; }
+        .grid-cols-2-min-w{
+            grid-template-columns: repeat(2, minmax(450px, 1fr));
+        }
+        @layer utilities {
+            /* Chrome, Safari, Edge, Opera */
+            .no-spinner::-webkit-outer-spin-button,
+            .no-spinner::-webkit-inner-spin-button {
+                -webkit-appearance: none;
+                margin: 0;
+            }
+
+            /* Firefox */
+            .no-spinner {
+                -moz-appearance: textfield;
+            }
+        }
     </style>
 </head>
-<body class="p-4 md:p-8">
+<body class="p-0">
 
-    <!-- Header & Settings -->
-    <div class="max-w-6xl mx-auto mb-8 flex justify-between items-center">
-        <div>
-            <h1 class="text-3xl font-black text-slate-900 tracking-tight">INVENTOR<span class="text-blue-600">BIN</span></h1>
-            <p class="text-slate-500 text-xs font-bold uppercase tracking-widest">Resistor Management System</p>
-        </div>
-        
-        <div class="relative">
-            <button onclick="toggleSettings()" class="bg-white border border-slate-200 p-2.5 rounded-xl shadow-sm hover:bg-slate-50 transition-all flex items-center gap-2 group">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-500 group-hover:rotate-90 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                </svg>
-                <span class="text-sm font-bold text-slate-700">Settings</span>
-            </button>
+    <!-- Modular Header (Reusable Component) -->
+    <header id="main-header" class="bg-white border-b border-slate-200 sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-4 md:px-8 py-4 flex justify-between items-center">
+            <div class="cursor-pointer" onclick="navigateTo('inventory')">
+                <h1 class="text-2xl font-black text-slate-900 tracking-tight">INVENTOR <span class="text-blue-600">Store</span></h1>
+                <p class="text-slate-500 text-[10px] font-bold uppercase tracking-widest">Resistor Management System</p>
+            </div>
+            
+            <div class="flex items-center gap-2">
+                <!-- Settings Dropdown -->
+                <div class="relative">
+                    <button onclick="toggleMenu('settings-menu')" class="bg-slate-50 border border-slate-200 p-2 rounded-xl hover:bg-slate-100 transition-all flex items-center gap-2 group">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-500 group-hover:rotate-45 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                        </svg>
+                    </button>
+                    <div id="settings-menu" class="dropdown-menu absolute right-0 mt-2 w-52 bg-white border border-slate-200 rounded-2xl shadow-xl overflow-hidden">
+                        <div class="p-2 space-y-1">
+                            <button onclick="DataManager.export()" class="w-full text-left px-4 py-2.5 text-sm font-bold text-slate-700 hover:bg-slate-50 rounded-lg flex items-center gap-3">
+                                <svg class="h-4 w-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" stroke-width="2"/></svg> Export
+                            </button>
+                            <button onclick="document.getElementById('import-input').click()" class="w-full text-left px-4 py-2.5 text-sm font-bold text-slate-700 hover:bg-slate-50 rounded-lg flex items-center gap-3">
+                                <svg class="h-4 w-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" stroke-width="2"/></svg> Import
+                            </button>
+                            <input type="file" id="import-input" class="hidden" accept=".json" onchange="DataManager.handleImport(event)">
+                            <hr class="border-slate-100">
+                            <button onclick="DataManager.clearAll()" class="w-full text-left px-4 py-2.5 text-sm font-bold text-red-500 hover:bg-red-50 rounded-lg flex items-center gap-3">
+                                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7" stroke-width="2"/></svg> Clear All
+                            </button>
+                        </div>
+                    </div>
+                </div>
 
-            <div id="settings-menu" class="absolute right-0 mt-2 w-56 bg-white border border-slate-200 rounded-2xl shadow-xl z-50 overflow-hidden">
-                <div class="p-2 space-y-1">
-                    <button onclick="DataManager.export()" class="w-full text-left px-4 py-3 text-sm font-bold text-slate-700 hover:bg-slate-50 flex items-center gap-3 rounded-xl transition-colors">
-                        <svg class="h-4 w-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
-                        Export Data (.json)
+                <!-- Burger Menu -->
+                <div class="relative">
+                    <button onclick="toggleMenu('burger-menu')" class="bg-blue-600 border border-blue-700 p-2 rounded-xl hover:bg-blue-700 transition-all text-white flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+                        </svg>
                     </button>
-                    <button onclick="document.getElementById('import-input').click()" class="w-full text-left px-4 py-3 text-sm font-bold text-slate-700 hover:bg-slate-50 flex items-center gap-3 rounded-xl transition-colors">
-                        <svg class="h-4 w-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
-                        Import Data (.json)
-                    </button>
-                    <input type="file" id="import-input" class="hidden" accept=".json" onchange="DataManager.handleImport(event)">
-                    <hr class="border-slate-100 my-1">
-                    <button onclick="DataManager.clearAll()" class="w-full text-left px-4 py-3 text-sm font-bold text-red-500 hover:bg-red-50 flex items-center gap-3 rounded-xl transition-colors">
-                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
-                        Clear All Data
-                    </button>
+                    <div id="burger-menu" class="dropdown-menu absolute right-0 mt-2 w-64 bg-white border border-slate-200 rounded-2xl shadow-xl overflow-hidden">
+                        <div class="p-2 space-y-1">
+                            <button onclick="navigateTo('inventory')" class="w-full text-left px-4 py-3 text-sm font-bold text-slate-700 hover:bg-slate-50 rounded-xl flex items-center gap-3">
+                                <span class="bg-blue-100 p-1.5 rounded-lg text-blue-600">🏠</span> Dashboard
+                            </button>
+                            <button onclick="navigateTo('resistance')" class="w-full text-left px-4 py-3 text-sm font-bold text-slate-700 hover:bg-slate-50 rounded-xl flex items-center gap-3">
+                                <span class="bg-orange-100 p-1.5 rounded-lg text-orange-600">📏</span> Read Resistance
+                            </button>
+                            <button onclick="navigateTo('about')" class="w-full text-left px-4 py-3 text-sm font-bold text-slate-700 hover:bg-slate-50 rounded-xl flex items-center gap-3">
+                                <span class="bg-slate-100 p-1.5 rounded-lg text-slate-600">ℹ️</span> About Us
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    </header>
 
-    <div class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8">
-        
-        <!-- Inventory Management -->
-        <div class="lg:col-span-5 flex flex-col gap-6">
-            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 flex flex-col h-[700px] overflow-hidden">
-                <div class="bg-slate-900 p-6 text-white flex justify-between items-center cursor-pointer select-none" onclick="toggleAddForm()">
-                    <div>
-                        <h2 class="text-xl font-black uppercase tracking-tight flex items-center gap-2">📦 My Inventory</h2>
+    <!-- Main Content Container -->
+    <main id="app-container" class="max-w-6xl mx-auto p-4 md:p-8">
+        <!-- Dashboard Page (Default) -->
+        <div id="page-inventory" class="page-view grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <!-- Inventory Management -->
+            <div class="lg:col-span-5 flex flex-col gap-6">
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 flex flex-col h-[700px] overflow-hidden">
+                    <div class="bg-slate-900 p-6 text-white flex justify-between items-center cursor-pointer select-none" onclick="toggleAddForm()">
+                        <h2 class="text-xl font-black uppercase tracking-tight">📦 My Inventory</h2>
+                        <div id="collapse-chevron" class="chevron-icon"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M19 9l-7 7-7-7" stroke-width="3"/></svg></div>
                     </div>
-                    <div id="collapse-chevron" class="chevron-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7" /></svg>
-                    </div>
-                </div>
 
-                <div class="p-6 flex flex-col flex-1 overflow-hidden">
-                    <div id="add-form-container" class="bg-slate-50 p-4 rounded-xl border border-slate-100 mb-6">
-                        <div class="grid grid-cols-12 gap-3 mb-4">
-                            <div class="col-span-8">
-                                <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Value & Unit</label>
-                                <div class="flex">
-                                    <input type="text" id="inv-val" placeholder="e.g. 10k" oninput="handleValueInput(this)" class="w-1/2 px-3 py-2 border border-slate-200 rounded-l-lg font-mono outline-none">
-                                    <div class="flex flex-1 -ml-px">
-                                        <input type="radio" name="unit" id="unit-ohm" value="1" class="hidden unit-radio" checked>
-                                        <label for="unit-ohm" class="flex-1 flex items-center justify-center border border-slate-200 text-[10px] font-bold cursor-pointer">Ω</label>
-                                        <input type="radio" name="unit" id="unit-kohm" value="1000" class="hidden unit-radio">
-                                        <label for="unit-kohm" class="flex-1 flex items-center justify-center border-y border-r border-slate-200 text-[10px] font-bold cursor-pointer">kΩ</label>
-                                        <input type="radio" name="unit" id="unit-mohm" value="1000000" class="hidden unit-radio">
-                                        <label for="unit-mohm" class="flex-1 flex items-center justify-center border-y border-r border-slate-200 rounded-r-lg text-[10px] font-bold cursor-pointer">MΩ</label>
+                    <div class="p-6 flex flex-col flex-1 overflow-hidden">
+                        <div id="add-form-container" class="bg-slate-50 p-4 rounded-xl border border-slate-100 mb-6">
+                            <div class="grid grid-cols-12 gap-3 mb-4">
+                                <div class="col-span-8">
+                                    <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Value & Unit</label>
+                                    <div class="flex">
+                                        <input type="text" id="inv-val" placeholder="e.g. 10k" oninput="handleValueInput(this)" class="w-1/2 px-3 py-2 border border-slate-200 rounded-l-lg font-mono outline-none">
+                                        <div class="flex flex-1 -ml-px">
+                                            <input type="radio" name="unit" id="unit-ohm" value="1" class="hidden unit-radio" checked>
+                                            <label for="unit-ohm" class="flex-1 flex items-center justify-center border border-slate-200 text-[10px] font-bold cursor-pointer">Ω</label>
+                                            <input type="radio" name="unit" id="unit-kohm" value="1000" class="hidden unit-radio">
+                                            <label for="unit-kohm" class="flex-1 flex items-center justify-center border-y border-r border-slate-200 text-[10px] font-bold cursor-pointer">kΩ</label>
+                                            <input type="radio" name="unit" id="unit-mohm" value="1000000" class="hidden unit-radio">
+                                            <label for="unit-mohm" class="flex-1 flex items-center justify-center border-y border-r border-slate-200 rounded-r-lg text-[10px] font-bold cursor-pointer">MΩ</label>
+                                        </div>
                                     </div>
                                 </div>
+                                <div class="col-span-4">
+                                    <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Qty</label>
+                                    <input type="number" id="inv-qty" placeholder="Qty" onkeydown="if(event.key==='Enter')addToInventory()" class="w-full px-3 py-2 border border-slate-200 rounded-lg outline-none">
+                                </div>
                             </div>
-                            <div class="col-span-4">
-                                <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Qty</label>
-                                <input type="number" id="inv-qty" placeholder="Qty" onkeydown="if(event.key==='Enter')addToInventory()" class="w-full px-3 py-2 border border-slate-200 rounded-lg outline-none">
+                            <button onclick="addToInventory()" class="w-full bg-blue-600 text-white py-2.5 rounded-lg font-bold shadow-md active:scale-95 transition-all">Add to Stock</button>
+                        </div>
+
+                        <div class="mb-4 flex gap-2">
+                            <input type="text" id="inv-search" oninput="handleSearchInput()" placeholder="Filter..." class="flex-1 px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none">
+                            <select id="inv-sort" onchange="handleSortChange()" class="bg-slate-50 border border-slate-200 rounded-lg px-2 text-xs font-bold text-slate-600 outline-none">
+                                <option value="val-asc">Value ↑</option>
+                                <option value="val-desc">Value ↓</option>
+                                <option value="qty-asc">Stock ↑</option>    
+                                <option value="qty-desc">Stock ↓</option>
+                            </select>
+                        </div>
+
+                        <div id="inventory-list" class="flex-1 overflow-y-auto custom-scroll pr-2"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Solver Section -->
+            <div class="lg:col-span-7 flex flex-col gap-6">
+                <div class="bg-slate-900 rounded-2xl shadow-lg p-8 text-white">
+                    <h2 class="text-2xl font-black mb-2 uppercase">Resistance Solver</h2>
+                    <div class="flex flex-col md:flex-row gap-2 mt-4">
+                        <div class="flex flex-1">
+                            <input type="text" id="target-val" placeholder="Target" oninput="handleValueInput(this, true)" class="w-full bg-slate-800 border border-slate-700 rounded-l-xl px-4 py-4 text-2xl font-mono text-blue-400 outline-none">
+                            <select id="target-unit" onchange="saveSolverState()" class="bg-slate-800 border-l border-slate-700 rounded-r-xl px-4 text-xl font-bold text-slate-300">
+                                <option value="1">Ω</option>
+                                <option value="1000">kΩ</option>
+                                <option value="1000000">MΩ</option>
+                            </select>
+                        </div>
+                        <button onclick="findCombinations()" class="bg-blue-600 hover:bg-blue-700 px-8 py-4 rounded-xl font-black uppercase active:scale-95 transition-all">Solve</button>
+                    </div>
+                </div>
+
+                <div id="results-container" class="hidden space-y-4">
+                    <h3 class="text-lg font-bold text-slate-800">🎯 Recommended Solutions</h3>
+                    <div id="closest-match" class="bg-blue-50 border border-blue-100 rounded-xl p-6"></div>
+                    <div id="combinations-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+                </div>
+
+                <div id="results-empty" class="bg-white rounded-2xl border border-dashed border-slate-300 p-20 text-center">
+                    <p class="text-slate-400 font-medium">Results will appear here.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Read Resistance Page -->
+        <div id="page-resistance" class="page-resistance page-view hidden text-center">
+            <div class="bg-white rounded-2xl shadow-sm overflow-hidden border border-slate-200 flex flex-col max-h-[90vh]">
+        
+                <div class="bg-slate-900 px-6 py-4 flex flex-wrap items-center justify-between text-white shrink-0">
+                    <div class="flex items-center">
+                        <h1 class="text-xl font-black uppercase tracking-tight  ">
+                            <span class="p-1 text-orange-600">📏</span> Resistor Calculator
+                        </h1>
+                        <span class="relative pl-2">
+                            <button title="Select bands" onclick="toggleMenu('resistor-mode-menu')" class="group border border-blue-700 p-2 rounded-xl hover:bg-blue-700 hover:text-white transition-all text-white flex items-center justify-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 group-hover:rotate-45 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                                </svg>
+                            </button>
+                            <div id="resistor-mode-menu" class="dropdown-menu absolute left-2 mt-2 w-50 bg-white border border-slate-200 rounded-2xl shadow-xl overflow-hidden">
+                                <div class="p-2 space-y-1">
+                                    <button id="btn-4" onclick="toggleMenu('resistor-mode-menu');setMode(4)" class="mode-btn w-full text-left px-4 py-3 text-sm font-bold text-slate-700 hover:bg-slate-50 rounded-xl flex items-center gap-3">
+                                        <span class="p-1 text-blue-600 icon">4</span> Band
+                                    </button>
+                                    <button id="btn-5" onclick="toggleMenu('resistor-mode-menu');setMode(5)" class="mode-btn w-full text-left px-4 py-3 text-sm font-bold text-slate-700 hover:bg-slate-50 rounded-xl flex items-center gap-3">
+                                        <span class="p-1 text-orange-600 icon">5</span> Band
+                                    </button>
+                                    <button id="btn-6" onclick="toggleMenu('resistor-mode-menu');setMode(6)" class="mode-btn w-full text-left px-4 py-3 text-sm font-bold text-slate-700 hover:bg-slate-50 rounded-xl flex items-center gap-3">
+                                        <span class="p-1 text-slate-600 icon">6</span> Band
+                                    </button>
+                                </div>
+                            </div>
+                        </span>
+                    </div>
+
+                    <div class="relative hidden items-center justify-center px-8 sm:flex">
+                        <div class="resistor-wire"></div>
+                        <div class="resistor-body">
+                            <div id="v-band1" class="band-visual bg-brown"></div>
+                            <div id="v-band2" class="band-visual bg-black"></div>
+                            <div id="v-band3" class="band-visual bg-black hide-band"></div>
+                            <div id="v-band4" class="band-visual bg-red"></div>
+                            <div class="w-4"></div> <!-- Gap for visual separation -->
+                            <div id="v-band5" class="band-visual bg-gold"></div>
+                            <div id="v-band6" class="band-visual bg-brown hide-band"></div>
+                        </div>
+                    </div>
+
+                    <div class="text-right min-w-[150px]">
+                        <div id="res-value" class="text-3xl font-black text-blue-400">1.00 kΩ</div>
+                        <div id="tol-value" class="text-xs font-semibold text-slate-400">± 5%</div>
+                    </div>
+                </div>
+
+                <div class="flex-1 overflow-auto flex flex-row flex-wrap">
+                    <!-- Left: Controls (Scrollable if needed, but designed for 1 column) -->
+                    <div class="flex-[5] grow-[5] min-w-[300px] p-4 grid grid-cols-1 gap-x-6 gap-y-3 overflow-y-auto border-r border-slate-100">
+                        
+                        <section id="sec-b1">
+                            <h3 class="text-[13px] font-bold text-slate-400 uppercase mb-1">1st Digit</h3>
+                            <div class="flex flex-wrap gap-2 text-[14px] font-bold" id="group-b1"></div>
+                        </section>
+
+                        <section id="sec-b2">
+                            <h3 class="text-[13px] font-bold text-slate-400 uppercase mb-1">2nd Digit</h3>
+                            <div class="flex flex-wrap gap-2 text-[14px] font-bold" id="group-b2"></div>
+                        </section>
+
+                        <section id="sec-b3" class="hide-band">
+                            <h3 class="text-[13px] font-bold text-slate-400 uppercase mb-1">3rd Digit</h3>
+                            <div class="flex flex-wrap gap-2 text-[14px] font-bold" id="group-b3"></div>
+                        </section>
+
+                        <section id="sec-mult">
+                            <h3 class="text-[13px] font-bold text-slate-400 uppercase mb-1">Multiplier ( x )</h3>
+                            <div class="flex flex-wrap gap-2 text-[14px] font-bold" id="group-mult"></div>
+                        </section>
+
+                        <section id="sec-tol">
+                            <h3 class="text-[13px] font-bold text-slate-400 uppercase mb-1">Tolerance ( % )</h3>
+                            <div class="flex flex-wrap gap-2 text-[12px] font-bold" id="group-tol"></div>
+                        </section>
+
+                        <section id="sec-ppm" class="hide-band">
+                            <h3 class="text-[13px] font-bold text-slate-400 uppercase mb-1">Temp Coeff (PPM)</h3>
+                            <div class="flex flex-wrap gap-2 text-[12px] font-bold" id="group-ppm"></div>
+                        </section>
+                    </div>
+
+                    <div class="flex-1 bg-slate-50 p-6 flex flex-col min-w-[180px]">
+                        <div>
+                            <span class="text-[13px] uppercase font-bold text-slate-400">Operating Range</span>
+                            <div class="mt-2 space-y-2">
+                                <div class="flex justify-between items-center text-sm">
+                                    <span class="text-slate-500">Minimum:</span>
+                                    <span id="min-res" class="font-bold text-slate-800">-</span>
+                                </div>
+                                <div class="flex justify-between items-center text-sm">
+                                    <span class="text-slate-500">Maximum:</span>
+                                    <span id="max-res" class="font-bold text-slate-800">-</span>
+                                </div>
                             </div>
                         </div>
-                        <button onclick="addToInventory()" class="w-full bg-blue-600 text-white py-2.5 rounded-lg font-bold shadow-md active:scale-95 transition-all">Add to Stock</button>
-                    </div>
 
-                    <div class="mb-4 flex gap-2">
-                        <input type="text" id="inv-search" oninput="handleSearchInput()" placeholder="Filter..." class="flex-1 px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none">
-                        <select id="inv-sort" onchange="handleSortChange()" class="bg-slate-50 border border-slate-200 rounded-lg px-2 text-xs font-bold text-slate-600 outline-none">
-                            <option value="val-asc">Value ↑</option>
-                            <option value="val-desc">Value ↓</option>
-                            <option value="qty-asc">Stock ↑</option>
-                            <option value="qty-desc">Stock ↓</option>
-                            
-                        </select>
-                    </div>
+                        <div id="ppm-box" class="pt-4 border-t border-slate-200 hide-band">
+                            <span class="text-[13px] uppercase font-bold text-slate-400">Temperature Coefficient</span>
+                            <div id="ppm-val" class="text-sm font-bold text-orange-600 mt-1">100 ppm/K</div>
+                        </div>
 
-                    <div id="inventory-list" class="flex-1 overflow-y-auto custom-scroll pr-2"></div>
+                        <div class="pt-2 border-t border-slate-200 mt-auto">
+                            <!-- <div class="h-1.5 w-full bg-slate-200 rounded-full relative overflow-hidden">
+                                <div class="absolute inset-y-0 left-0 bg-blue-500 w-full opacity-10"></div>
+                                <div class="absolute inset-y-0 left-1/4 right-1/4 bg-blue-600 rounded-full"></div>
+                            </div> -->
+                            <p class="text-[10px] text-slate-400 mt-2 leading-tight">Calculated based on standard electronic color code values (IEC 60062).</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- Solver -->
-        <div class="lg:col-span-7 flex flex-col gap-6">
-            <div class="bg-slate-900 rounded-2xl shadow-lg p-8 text-white relative">
-                <h2 class="text-2xl font-black mb-2 uppercase">Resistance Solver</h2>
-                <div class="flex flex-col md:flex-row gap-2 mt-4">
-                    <div class="flex flex-1">
-                        <input type="text" id="target-val" placeholder="Target" oninput="handleValueInput(this, true)" class="w-full bg-slate-800 border border-slate-700 rounded-l-xl px-4 py-4 text-2xl font-mono text-blue-400 outline-none">
-                        <select id="target-unit" onchange="saveSolverState()" class="bg-slate-800 border-l border-slate-700 rounded-r-xl px-4 text-xl font-bold text-slate-300">
-                            <option value="1">Ω</option>
-                            <option value="1000">kΩ</option>
-                            <option value="1000000">MΩ</option>
-                        </select>
+        <!-- About Us Page -->
+        <div id="page-about" class="page-view hidden py-10">
+            <div class="max-w-3xl mx-auto">
+                <h2 class="text-4xl font-black text-slate-900 mb-6">About <span class="text-blue-600">Inventor Store</span></h2>
+                <div class="bg-white border border-slate-200 rounded-3xl p-8 shadow-sm space-y-6 text-slate-600 leading-relaxed">
+                    <p>Welcome to the premium resistor management tool. Designed for engineers and hobbyists alike, this application helps you manage your physical inventory and calculate complex parallel or series resistor combinations instantly.</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="p-4 bg-slate-50 rounded-2xl">
+                            <h4 class="font-bold text-slate-900 mb-1">Efficient Tracking</h4>
+                            <p class="text-sm">Store and categorize thousands of resistors with ease.</p>
+                        </div>
+                        <div class="p-4 bg-slate-50 rounded-2xl">
+                            <h4 class="font-bold text-slate-900 mb-1">Powerful Solver</h4>
+                            <p class="text-sm">Find the perfect combination for any non-standard value.</p>
+                        </div>
                     </div>
-                    <button onclick="findCombinations()" class="bg-blue-600 hover:bg-blue-700 px-8 py-4 rounded-xl font-black uppercase tracking-wide shadow-lg active:scale-95 transition-all">Solve</button>
+                    <p class="text-xs pt-4 border-t border-slate-100">Version 1.2.0 • Created with precision for the electronics community.</p>
                 </div>
             </div>
-
-            <div id="results-container" class="hidden space-y-4">
-                <h3 class="text-lg font-bold text-slate-800">🎯 Recommended Solutions</h3>
-                <div id="closest-match" class="bg-blue-50 border border-blue-100 rounded-xl p-6"></div>
-                <div id="combinations-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
-            </div>
-
-            <div id="results-empty" class="bg-white rounded-2xl border border-dashed border-slate-300 p-20 text-center">
-                <p class="text-slate-400 font-medium">Results will appear here.</p>
-            </div>
         </div>
-    </div>
+    </main>
 
     <script>
-        // --- DATA MANAGEMENT OBJECT (Reusable for other pages) ---
+        // --- SHARED NAVIGATION & UI ---
+        function toggleMenu(id) {
+            const menu = document.getElementById(id);
+            const isActive = menu.classList.contains('active');
+            // Close all first
+            document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('active'));
+            if (!isActive) menu.classList.add('active');
+        }
+
+        window.addEventListener('click', (e) => {
+            if (!e.target.closest('.relative')) {
+                document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('active'));
+            }
+        });
+
+        function navigateTo(pageId) {
+            document.querySelectorAll('.page-view').forEach(p => p.classList.add('hidden'));
+            document.getElementById(`page-${pageId}`).classList.remove('hidden');
+            document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('active'));
+            window.scrollTo(0, 0);
+        }
+
+        // --- DATA MANAGEMENT ---
         const DataManager = {
             keys: {
                 inventory: 'resistor_inv',
@@ -182,73 +486,36 @@
                 solverUnit: 'resistor_solver_unit',
                 formCollapsed: 'resistor_add_collapsed'
             },
-
             export() {
                 const data = {};
-                Object.values(this.keys).forEach(k => {
-                    data[k] = localStorage.getItem(k);
-                });
-                
+                Object.values(this.keys).forEach(k => data[k] = localStorage.getItem(k));
                 const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `inventorbin_backup_${new Date().toISOString().split('T')[0]}.json`;
+                const a = Object.assign(document.createElement('a'), {
+                    href: URL.createObjectURL(blob),
+                    download: `inventor_backup_${new Date().toISOString().slice(0,10)}.json`
+                });
                 a.click();
-                URL.revokeObjectURL(url);
-                toggleSettings(false);
             },
-
             async handleImport(event) {
-                const file = event.target.files[0];
-                if (!file) return;
-
                 try {
-                    const text = await file.text();
-                    const data = JSON.parse(text);
-                    
-                    // Validation: Check if it looks like our backup
-                    if (!data[this.keys.inventory]) throw new Error("Invalid backup file format");
-
-                    Object.keys(data).forEach(k => {
-                        if (data[k] !== null) localStorage.setItem(k, data[k]);
-                    });
-
-                    alert("Data imported successfully!");
+                    const data = JSON.parse(await event.target.files[0].text());
+                    if (!data[this.keys.inventory]) throw new Error();
+                    Object.keys(data).forEach(k => data[k] && localStorage.setItem(k, data[k]));
                     location.reload();
-                } catch (e) {
-                    alert("Error importing data: " + e.message);
-                }
-                event.target.value = '';
-                toggleSettings(false);
+                } catch { alert("Invalid backup file."); }
             },
-
             clearAll() {
-                if (confirm("Are you sure? This will delete ALL inventory and settings.")) {
+                if (confirm("Delete everything?")) {
                     Object.values(this.keys).forEach(k => localStorage.removeItem(k));
                     location.reload();
                 }
             }
         };
 
-        // --- UI & SOLVER LOGIC ---
+        // --- CORE INVENTORY & SOLVER LOGIC ---
         let inventory = JSON.parse(localStorage.getItem(DataManager.keys.inventory)) || [];
         let isAddFormCollapsed = localStorage.getItem(DataManager.keys.formCollapsed) === 'true';
 
-        function toggleSettings(force) {
-            const menu = document.getElementById('settings-menu');
-            if (force === false) menu.classList.remove('active');
-            else menu.classList.toggle('active');
-        }
-
-        // Close dropdown when clicking outside
-        window.addEventListener('click', (e) => {
-            if (!e.target.closest('.relative')) toggleSettings(false);
-        });
-
-        function handleSearchInput() { localStorage.setItem(DataManager.keys.search, document.getElementById('inv-search').value); renderInventory(); }
-        function handleSortChange() { localStorage.setItem(DataManager.keys.sort, document.getElementById('inv-sort').value); renderInventory(); }
-        
         function handleValueInput(input, isSolver = false) {
             const val = input.value.toLowerCase();
             let num = val.replace(/[^0-9.]/g, '');
@@ -263,11 +530,6 @@
             localStorage.setItem(DataManager.keys.solverUnit, document.getElementById('target-unit').value);
         }
 
-        function saveInventory() { 
-            localStorage.setItem(DataManager.keys.inventory, JSON.stringify(inventory)); 
-            renderInventory(); 
-        }
-
         function addToInventory() {
             const v = parseFloat(document.getElementById('inv-val').value);
             const q = parseInt(document.getElementById('inv-qty').value);
@@ -278,28 +540,25 @@
             exist ? exist.qty += q : inventory.push({val, qty: q});
             document.getElementById('inv-val').value = '';
             document.getElementById('inv-qty').value = '';
-            saveInventory();
+            saveAndRender();
         }
 
-        function adjustQty(v, d) { 
-            const i = inventory.find(x => x.val === v); 
-            if(i) { i.qty = Math.max(0, i.qty + d); saveInventory(); } 
+        function adjustQty(v, d) {
+            const i = inventory.find(x => x.val === v);
+            if(i) { i.qty = Math.max(0, i.qty + d); saveAndRender(); }
         }
 
-        function removeInventory(v) { 
-            if(confirm("Remove this component?")) {
-                inventory = inventory.filter(i => i.val !== v); 
-                saveInventory(); 
-            }
+        function removeInventory(v) {
+            if(confirm("Remove component?")) { inventory = inventory.filter(i => i.val !== v); saveAndRender(); }
         }
 
-        function toggleAddForm(force = null) {
-            isAddFormCollapsed = force !== null ? force : !isAddFormCollapsed;
-            const c = document.getElementById('add-form-container');
-            const ch = document.getElementById('collapse-chevron');
-            isAddFormCollapsed ? (c.classList.add('collapsed'), ch.classList.add('rotated')) : (c.classList.remove('collapsed'), ch.classList.remove('rotated'));
-            localStorage.setItem(DataManager.keys.formCollapsed, isAddFormCollapsed);
+        function saveAndRender() {
+            localStorage.setItem(DataManager.keys.inventory, JSON.stringify(inventory));
+            renderInventory();
         }
+
+        function handleSearchInput() { localStorage.setItem(DataManager.keys.search, document.getElementById('inv-search').value); renderInventory(); }
+        function handleSortChange() { localStorage.setItem(DataManager.keys.sort, document.getElementById('inv-sort').value); renderInventory(); }
 
         function formatOhms(n) {
             if (n >= 1000000) return (n/1000000).toFixed(2).replace(/\.00$/,'') + " MΩ";
@@ -314,18 +573,71 @@
             let filtered = inventory.filter(i => formatOhms(i.val).toLowerCase().includes(search));
             filtered.sort((a,b) => sort==='val-asc' ? a.val-b.val : sort==='val-desc' ? b.val-a.val : sort==='qty-asc' ? a.qty-b.qty : b.qty-a.qty);
             list.innerHTML = filtered.map(i => `
-                <div class="${i.qty<1?'opacity-50 grayscale':''} flex items-center justify-between p-3 bg-white border border-slate-100 rounded-md shadow-sm mb-2 transition-all">
+                <div class="${i.qty<1?'opacity-50 grayscale':''} flex items-center justify-between p-3 bg-white border border-slate-100 rounded-md shadow-sm mb-2">
                     <div class="font-mono font-black text-slate-800 text-sm">${formatOhms(i.val)}</div>
-                    <div class="flex items-center gap-1">
-                        <button onclick="adjustQty(${i.val}, -1)" class="w-7 h-7 bg-slate-100 rounded font-bold hover:bg-slate-200">-</button>
-                        <span class="w-8 text-center text-xs font-black">${i.qty}</span>
-                        <button onclick="adjustQty(${i.val}, 1)" class="w-7 h-7 bg-slate-100 rounded font-bold hover:bg-slate-200">+</button>
+                    <div class="flex items-stretch gap-1">
+                        <button onclick="adjustQty(${i.val}, -1)" class="w-7 h-7 bg-slate-50 rounded border border-slate-200">-</button>
+                        <span onclick="editQty(this, ${i.val})" class="w-8 h-7 flex justify-center items-center text-center text-xs font-black">${i.qty}</span>
+                        <button onclick="adjustQty(${i.val}, 1)" class="w-7 h-7 bg-slate-50 rounded border border-slate-200">+</button>
                         <button onclick="removeInventory(${i.val})" class="ml-2 text-slate-300 hover:text-red-500">×</button>
                     </div>
                 </div>
             `).join('');
         }
 
+        function editQty(el, val) {
+            const currentQty = inventory.find(i => i.val === val).qty;
+            const input = document.createElement('input');
+            input.type = 'number';
+            input.value = currentQty;
+            input.className = 'qty-edit-input no-spinner';
+            
+            const handleUpdate = () => {
+                const newQty = parseInt(input.value);
+                if(currentQty == newQty){
+                    input.remove()
+                    el.innerHTML = currentQty;
+                    return
+                }
+                if (!isNaN(newQty) && newQty >= 0) {
+                    updateInventoryQty(val, newQty);
+                } else {
+                    renderInventory();
+                }
+            };
+
+            input.onblur = handleUpdate;
+            input.onkeydown = (e) => {
+                if (e.key === 'Enter') input.blur();
+                else if (e.key === 'Escape') renderInventory();
+            };
+
+            el.innerHTML = '';
+            el.appendChild(input);
+            input.focus();
+            input.select();
+        }
+        function updateInventoryQty(val, newQty) {
+            const item = inventory.find(i => i.val === val);
+            if (item) {
+                item.qty = newQty;
+                saveAndRender();
+            }
+        }
+
+        function toggleAddForm() {
+            isAddFormCollapsed = !isAddFormCollapsed;
+            const c = document.getElementById('add-form-container');
+            const ch = document.getElementById('collapse-chevron');
+            isAddFormCollapsed ? (c.classList.add('collapsed'), ch.classList.add('rotated')) : (c.classList.remove('collapsed'), ch.classList.remove('rotated'));
+            localStorage.setItem(DataManager.keys.formCollapsed, isAddFormCollapsed);
+        }
+
+        function typeSymbol(type){
+            return type.toLowerCase().includes("parallel") ?'|' : '+'
+        }
+
+        // Solver algorithm
         function findCombinations() {
             const raw = parseFloat(document.getElementById('target-val').value);
             const unit = parseFloat(document.getElementById('target-unit').value);
@@ -401,7 +713,7 @@
                         </div>
                         <div class="text-4xl font-black text-slate-800 mb-3">${formatOhms(best.val)}</div>
                         <div class="flex gap-1.5 flex-wrap">
-                            ${best.parts.map(p => `<span class="bg-white px-2 py-1 border border-blue-100 rounded text-xs font-mono font-bold text-blue-800 shadow-sm">${formatOhms(p)}</span>`).join('<span class="text-blue-200 self-center font-bold">+</span>')}
+                            ${best.parts.map(p => `<span class="bg-white px-2 py-1 border border-blue-100 rounded text-xs font-mono font-bold text-blue-800 shadow-sm">${formatOhms(p)}</span>`).join(`<span class="text-blue-200 self-center font-bold">${typeSymbol(best.type)}</span>`)}
                         </div>
                     </div>
                     <div class="text-right ml-4">
@@ -424,6 +736,130 @@
             }).join('');
         }
 
+
+        {
+            const colors = [
+            { name: 'Black', val: 0, mult: 1, tol: null, ppm: 250, hex: 'bg-black', text: 'text-white' },
+            { name: 'Brown', val: 1, mult: 10, tol: 1, ppm: 100, hex: 'bg-brown', text: 'text-white' },
+            { name: 'Red', val: 2, mult: 100, tol: 2, ppm: 50, hex: 'bg-red', text: 'text-white' },
+            { name: 'Orange', val: 3, mult: 1000, tol: null, ppm: 15, hex: 'bg-orange', text: 'text-white' },
+            { name: 'Yellow', val: 4, mult: 10000, tol: null, ppm: 25, hex: 'bg-yellow', text: 'text-black' },
+            { name: 'Green', val: 5, mult: 100000, tol: 0.5, ppm: 20, hex: 'bg-green', text: 'text-white' },
+            { name: 'Blue', val: 6, mult: 1000000, tol: 0.25, ppm: 10, hex: 'bg-blue', text: 'text-white' },
+            { name: 'Violet', val: 7, mult: 10000000, tol: 0.1, ppm: 5, hex: 'bg-violet', text: 'text-white' },
+            { name: 'Grey', val: 8, mult: null, tol: 0.05, ppm: 1, hex: 'bg-grey', text: 'text-white' },
+            { name: 'White', val: 9, mult: null, tol: null, ppm: null, hex: 'bg-white', text: 'text-black' },
+            { name: 'Gold', val: null, mult: 0.1, tol: 5, ppm: null, hex: 'bg-gold', text: 'text-black' },
+            { name: 'Silver', val: null, mult: 0.01, tol: 10, ppm: null, hex: 'bg-silver', text: 'text-black' }
+        ];
+
+        let currentMode = 4; // Default to 4-band
+
+        function setMode(mode) {
+            currentMode = mode;
+            // Update Buttons
+            document.querySelectorAll('.mode-btn').forEach(b => b.classList.toggle("selected", false) );
+            document.getElementById(`btn-${mode}`).classList.toggle("selected", true)
+
+            // Toggle Visibility
+            document.getElementById('sec-b3').classList.toggle('hide-band', mode === 4);
+            document.getElementById('sec-ppm').classList.toggle('hide-band', mode !== 6);
+            document.getElementById('ppm-box').classList.toggle('hide-band', mode !== 6);
+            
+            document.getElementById('v-band3').classList.toggle('hide-band', mode === 4);
+            document.getElementById('v-band6').classList.toggle('hide-band', mode !== 6);
+
+            updateRegistance();
+        }
+
+        function initInputs() {
+            const containers = {
+                b1: document.getElementById('group-b1'),
+                b2: document.getElementById('group-b2'),
+                b3: document.getElementById('group-b3'),
+                mult: document.getElementById('group-mult'),
+                tol: document.getElementById('group-tol'),
+                ppm: document.getElementById('group-ppm')
+            };
+
+            colors.forEach((c, idx) => {
+                if (c.val !== null) {
+                    containers.b1.innerHTML += createRadio('b1', idx, c, idx === 1);
+                    containers.b2.innerHTML += createRadio('b2', idx, c, idx === 0);
+                    containers.b3.innerHTML += createRadio('b3', idx, c, idx === 0);
+                }
+                if (c.mult !== null) containers.mult.innerHTML += createRadio('mult', idx, c, c.name === 'Red');
+                if (c.tol !== null) containers.tol.innerHTML += createRadio('tol', idx, c, c.name === 'Gold');
+                if (c.ppm !== null) containers.ppm.innerHTML += createRadio('ppm', idx, c, c.name === 'Brown');
+            });
+        }
+
+        function createRadio(group, id, color, checked) {
+            const labelContent = group === 'mult' ? formatNumber(color.mult) : (group === 'tol' ? color.tol : (group === 'ppm' ? color.ppm : color.val));
+            return `
+                <div class="relative">
+                    <input type="radio" name="${group}" title="${color.name}" id="${group}-${id}" value="${id}" class="hidden" ${checked ? 'checked' : ''} onchange="updateRegistance()">
+                    <label for="${group}-${id}" title="${color.name}" class="flex items-center justify-center w-10 h-10 rounded cursor-pointer border shadow-md transition-all ${color.hex} ${color.text}">
+                        ${labelContent}
+                    </label>
+                </div>
+            `;
+        }
+
+        function formatNumber(num) {
+            if (num >= 1000000) return (num / 1000000) + 'M';
+            if (num >= 1000) return (num / 1000) + 'k';
+            return num;
+        }
+
+        function formatOhms(num) {
+            if (num >= 1000000) return (num / 1000000).toLocaleString(undefined, {maximumFractionDigits: 2}) + " MΩ";
+            if (num >= 1000) return (num / 1000).toLocaleString(undefined, {maximumFractionDigits: 2}) + " kΩ";
+            return num.toLocaleString(undefined, {maximumFractionDigits: 2}) + " Ω";
+        }
+
+        function updateRegistance() {
+            const b1 = colors[document.querySelector('input[name="b1"]:checked').value];
+            const b2 = colors[document.querySelector('input[name="b2"]:checked').value];
+            const b3 = colors[document.querySelector('input[name="b3"]:checked').value];
+            const mult = colors[document.querySelector('input[name="mult"]:checked').value];
+            const tol = colors[document.querySelector('input[name="tol"]:checked').value];
+            const ppm = colors[document.querySelector('input[name="ppm"]:checked').value];
+
+            // Visual Update
+            document.getElementById('v-band1').className = `band-visual ${b1.hex}`;
+            document.getElementById('v-band2').className = `band-visual ${b2.hex}`;
+            document.getElementById('v-band3').className = `band-visual ${b3.hex} ${currentMode === 4 ? 'hide-band' : ''}`;
+            document.getElementById('v-band4').className = `band-visual ${mult.hex}`;
+            document.getElementById('v-band5').className = `band-visual ${tol.hex}`;
+            document.getElementById('v-band6').className = `band-visual ${ppm.hex} ${currentMode !== 6 ? 'hide-band' : ''}`;
+
+            // Math
+            let base;
+            if (currentMode === 4) {
+                base = (b1.val * 10) + b2.val;
+            } else {
+                base = (b1.val * 100) + (b2.val * 10) + b3.val;
+            }
+
+            const resistance = base * mult.mult;
+            const tPct = tol.tol;
+            const min = resistance * (1 - (tPct / 100));
+            const max = resistance * (1 + (tPct / 100));
+
+            // Display
+            document.getElementById('res-value').innerText = formatOhms(resistance);
+            document.getElementById('tol-value').innerText = `± ${tPct}%`;
+            document.getElementById('min-res').innerText = formatOhms(min);
+            document.getElementById('max-res').innerText = formatOhms(max);
+            
+            if (currentMode === 6) {
+                document.getElementById('ppm-val').innerText = `${ppm.ppm} ppm/K`;
+            }
+        }
+
+        }
+
         window.onload = () => {
             document.getElementById('inv-search').value = localStorage.getItem(DataManager.keys.search) || "";
             document.getElementById('inv-sort').value = localStorage.getItem(DataManager.keys.sort) || "val-asc";
@@ -432,7 +868,14 @@
             if(sVal) document.getElementById('target-val').value = sVal;
             if(sUnit) document.getElementById('target-unit').value = sUnit;
             renderInventory();
-            toggleAddForm(isAddFormCollapsed);
+            initInputs();
+            setMode(4);
+            //navigateTo("resistance")
+            if(isAddFormCollapsed) {
+                const c = document.getElementById('add-form-container');
+                const ch = document.getElementById('collapse-chevron');
+                c.classList.add('collapsed'); ch.classList.add('rotated');
+            }
         };
     </script>
 </body>
